@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Vote Counter</title>
+</head>
+<body>
+    <h1>Real-time Vote Counter</h1>
+    <div id="votes"></div>
+
+    <script>
+        const votesElement = document.getElementById('votes');
+        const eventSource = new EventSource('http://localhost:3000');
+
+        eventSource.onmessage = (event) => {
+            const votes = JSON.parse(event.data);
+            votesElement.innerHTML = `
+                <p>Option 1: ${votes.option1}</p>
+                <p>Option 2: ${votes.option2}</p>
+            `;
+        };
+
+        function vote(option) {
+            fetch('http://localhost:3001/vote', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ option }),
+            });
+        }
+    </script>
+</body>
+</html>
